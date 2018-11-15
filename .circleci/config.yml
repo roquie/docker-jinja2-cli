@@ -1,0 +1,31 @@
+version: 2
+jobs:
+  build_latest:
+    working_directory: /app
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build application Docker image
+          command: docker build -t $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:latest .
+      - run:
+          name: Push image to registry
+          command: |
+            echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+            docker push $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:latest
+
+workflows:
+  version: 2
+  nightly:
+    triggers:
+    - schedule:
+        cron: "0 0 * * 0" # Every week
+        filters:
+          branches:
+            only:
+            - master
+  build_and_test:
+    jobs:
+    - build_latest
