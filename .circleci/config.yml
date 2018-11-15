@@ -26,6 +26,5 @@ workflows:
           branches:
             only:
             - master
-  build_and_test:
     jobs:
-    - build_latest
+      - build_latest
