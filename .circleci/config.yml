@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build_latest:
+  build:
     working_directory: /app
     docker:
       - image: docker:stable-git
@@ -18,13 +18,13 @@ jobs:
 
 workflows:
   version: 2
-  nightly:
+  build_latest:
     triggers:
-    - schedule:
-        cron: "0 0 * * 0" # Every week
-        filters:
-          branches:
-            only:
-            - master
+      - schedule:
+          cron: "0 0 * * 0" # Every week
+          filters:
+            branches:
+              only:
+                - master
     jobs:
-      - build_latest
+      - build
